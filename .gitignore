@@ -40,3 +40,8 @@ server/.env
 # generated native folders
 /ios
 /android
+
+# local env files
+.env
+.env*.local
+server/.env
