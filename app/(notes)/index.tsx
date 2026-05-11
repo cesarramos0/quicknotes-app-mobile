@@ -1,12 +1,16 @@
-import { useCallback } from 'react'
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native'
+import { useCallback, useState } from 'react'
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
 import { useRouter, useFocusEffect } from 'expo-router'
+import { useTheme } from '../../hooks/useTheme'
 import { useNotes } from '../../context/NotesContext'
 import { NoteCard } from '../../components/NoteCard'
+import { SkeletonCard } from '../../components/SkeletonCard'
 
 export default function HomeScreen() {
   const { notes, loading, error, fetchNotes } = useNotes()
   const router = useRouter()
+  const { colors } = useTheme()
+  const [query, setQuery] = useState('')
 
   useFocusEffect(
     useCallback(() => {
@@ -14,38 +18,59 @@ export default function HomeScreen() {
     }, [fetchNotes])
   )
 
-  console.log('notas en lista:', notes.length, notes)
-  if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#0f62fe" />
-        <Text style={styles.loadingText}>Cargando notas...</Text>
-      </View>
-    )
-  }
+  const filtered = notes.filter(note =>
+    note.title.toLowerCase().includes(query.toLowerCase()) ||
+    note.content.toLowerCase().includes(query.toLowerCase())
+  )
 
   if (error) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>{error}</Text>
+      <View style={[styles.centered, { backgroundColor: colors.background }]}>
+        <Text style={{ color: colors.error }}>{error}</Text>
       </View>
     )
   }
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={notes}
-        keyExtractor={note => note.id}
-        renderItem={({ item }) => <NoteCard note={item} />}
-        ListEmptyComponent={
-          <View style={styles.empty}>
-            <Text style={styles.emptyTitle}>No tienes ninguna nota todavía</Text>
-            <Text style={styles.emptySubtitle}>Crea tu primera nota con el botón de abajo</Text>
-          </View>
-        }
-        contentContainerStyle={styles.list}
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <TextInput
+        style={[styles.searchInput, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]}
+        placeholder="Buscar notas..."
+        placeholderTextColor={colors.placeholder}
+        value={query}
+        onChangeText={setQuery}
       />
+
+      {loading && notes.length === 0 ? (
+        <View style={{ padding: 16 }}>
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </View>
+      ) : (
+        <FlatList
+          data={filtered}
+          keyExtractor={note => note.id}
+          renderItem={({ item }) => <NoteCard note={item} />}
+          refreshing={loading}
+          onRefresh={fetchNotes}
+          ListEmptyComponent={
+            <View style={styles.empty}>
+              {query ? (
+                <Text style={[styles.emptyTitle, { color: colors.text }]}>No hay notas con "{query}"</Text>
+              ) : (
+                <>
+                  <Text style={[styles.emptyTitle, { color: colors.text }]}>No tienes ninguna nota todavía</Text>
+                  <Text style={[styles.emptySubtitle, { color: colors.subtext }]}>Crea tu primera nota con el botón de abajo</Text>
+                </>
+              )}
+            </View>
+          }
+          contentContainerStyle={styles.list}
+        />
+      )}
+
       <TouchableOpacity style={styles.fab} onPress={() => router.push('/(notes)/new')}>
         <Text style={styles.fabText}>+</Text>
       </TouchableOpacity>
@@ -56,25 +81,25 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
+  },
+  searchInput: {
+    margin: 16,
+    marginBottom: 8,
+    borderRadius: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    fontSize: 15,
+    borderWidth: 1,
   },
   list: {
     padding: 16,
+    paddingTop: 8,
     paddingBottom: 80,
   },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
-  },
-  loadingText: {
-    color: '#525252',
-    fontSize: 14,
-  },
-  errorText: {
-    color: '#da1e28',
-    fontSize: 14,
   },
   empty: {
     alignItems: 'center',
@@ -84,11 +109,10 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#161616',
+    textAlign: 'center',
   },
   emptySubtitle: {
     fontSize: 14,
-    color: '#525252',
     textAlign: 'center',
   },
   fab: {

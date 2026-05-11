@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, StyleSheet, Alert } from 'react-native'
+import { useTheme } from '../hooks/useTheme'
 import type { Note, AIAction } from '../types/note'
 import { AIActionButtons } from './AIActionButtons'
 import { notesApi } from '../api/client'
@@ -10,6 +11,7 @@ interface NoteFormProps {
 }
 
 export function NoteForm({ initialNote, onSubmit }: NoteFormProps) {
+  const { colors } = useTheme()
   const [title, setTitle] = useState(initialNote?.title || '')
   const [content, setContent] = useState(initialNote?.content || '')
   const [titleError, setTitleError] = useState('')
@@ -59,28 +61,28 @@ export function NoteForm({ initialNote, onSubmit }: NoteFormProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Título</Text>
+      <Text style={[styles.label, { color: colors.text }]}>Título</Text>
       <TextInput
-        style={[styles.input, !!titleError && styles.inputError]}
+        style={[styles.input, { backgroundColor: colors.card, borderColor: titleError ? colors.error : colors.border, color: colors.text }]}
         value={title}
         onChangeText={setTitle}
         placeholder="Título de la nota"
-        placeholderTextColor="#a8a8a8"
+        placeholderTextColor={colors.placeholder}
       />
-      {!!titleError && <Text style={styles.errorText}>{titleError}</Text>}
+      {!!titleError && <Text style={[styles.errorText, { color: colors.error }]}>{titleError}</Text>}
 
-      <Text style={styles.label}>Contenido</Text>
+      <Text style={[styles.label, { color: colors.text }]}>Contenido</Text>
       <TextInput
-        style={[styles.input, styles.textArea, !!contentError && styles.inputError]}
+        style={[styles.input, styles.textArea, { backgroundColor: colors.card, borderColor: contentError ? colors.error : colors.border, color: colors.text }]}
         value={content}
         onChangeText={setContent}
         placeholder="Escribe aquí tu nota..."
-        placeholderTextColor="#a8a8a8"
+        placeholderTextColor={colors.placeholder}
         multiline
         numberOfLines={8}
         textAlignVertical="top"
       />
-      {!!contentError && <Text style={styles.errorText}>{contentError}</Text>}
+      {!!contentError && <Text style={[styles.errorText, { color: colors.error }]}>{contentError}</Text>}
 
       {initialNote && (
         <AIActionButtons onAction={handleAIAction} loading={aiLoading} />
@@ -109,28 +111,20 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#161616',
     marginBottom: 4,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#e0e0e0',
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 15,
-    color: '#161616',
-    backgroundColor: '#fff',
-  },
-  inputError: {
-    borderColor: '#da1e28',
   },
   textArea: {
     height: 180,
     paddingTop: 10,
   },
   errorText: {
-    color: '#da1e28',
     fontSize: 12,
     marginTop: 2,
   },

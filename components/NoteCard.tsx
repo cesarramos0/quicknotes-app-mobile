@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { useRouter } from 'expo-router'
+import { useTheme } from '../hooks/useTheme'
 import type { Note } from '../types/note'
 
 interface NoteCardProps {
@@ -8,6 +9,7 @@ interface NoteCardProps {
 
 export function NoteCard({ note }: NoteCardProps) {
   const router = useRouter()
+  const { colors } = useTheme()
 
   const preview = note.content.length > 100
     ? note.content.slice(0, 100) + '...'
@@ -20,17 +22,19 @@ export function NoteCard({ note }: NoteCardProps) {
   })
 
   return (
-    <TouchableOpacity style={styles.card} onPress={() => router.push(`/(notes)/${note.id}`)}>
-      <Text style={styles.title}>{note.title}</Text>
-      <Text style={styles.preview}>{preview}</Text>
-      <Text style={styles.date}>{formattedDate}</Text>
+    <TouchableOpacity
+      style={[styles.card, { backgroundColor: colors.card }]}
+      onPress={() => router.push(`/(notes)/${note.id}`)}
+    >
+      <Text style={[styles.title, { color: colors.text }]}>{note.title}</Text>
+      <Text style={[styles.preview, { color: colors.subtext }]}>{preview}</Text>
+      <Text style={[styles.date, { color: colors.placeholder }]}>{formattedDate}</Text>
     </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -44,16 +48,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 6,
-    color: '#161616',
   },
   preview: {
     fontSize: 14,
-    color: '#525252',
     marginBottom: 10,
     lineHeight: 20,
   },
   date: {
     fontSize: 12,
-    color: '#8d8d8d',
   },
 })

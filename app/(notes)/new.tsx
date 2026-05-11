@@ -1,26 +1,26 @@
+import { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { useRouter } from 'expo-router'
+import { useTheme } from '../../hooks/useTheme'
 import { useNotes } from '../../context/NotesContext'
 import { NoteForm } from '../../components/NoteForm'
+import { Toast } from '../../components/Toast'
 
 export default function NewNoteScreen() {
   const { createNote } = useNotes()
   const router = useRouter()
+  const { colors } = useTheme()
+  const [toastVisible, setToastVisible] = useState(false)
 
-const handleSubmit = async (title: string, content: string) => {
-  console.log('handleSubmit llamado', title, content)
-  try {
+  const handleSubmit = async (title: string, content: string) => {
     await createNote(title, content)
-    console.log('nota creada, navegando...')
-    router.replace('/(notes)')
-  } catch (e) {
-    console.log('error:', e)
+    router.back()
   }
-}
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <NoteForm onSubmit={handleSubmit} />
+      <Toast message="✓ Nota creada" visible={toastVisible} />
     </View>
   )
 }
@@ -28,7 +28,6 @@ const handleSubmit = async (title: string, content: string) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
     padding: 16,
   },
 })

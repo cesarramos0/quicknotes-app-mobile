@@ -1,4 +1,5 @@
 import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet } from 'react-native'
+import { useTheme } from '../hooks/useTheme'
 import type { AIAction } from '../types/note'
 
 interface AIActionButtonsProps {
@@ -7,25 +8,36 @@ interface AIActionButtonsProps {
 }
 
 export function AIActionButtons({ onAction, loading }: AIActionButtonsProps) {
+  const { colors } = useTheme()
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="small" color="#0f62fe" />
-        <Text style={styles.loadingText}>Procesando con IA...</Text>
+        <ActivityIndicator size="small" color={colors.primary} />
+        <Text style={[styles.loadingText, { color: colors.subtext }]}>Procesando con IA...</Text>
       </View>
     )
   }
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={() => onAction('improve')}>
-        <Text style={styles.buttonText}>✨ Mejorar</Text>
+      <TouchableOpacity
+        style={[styles.button, { borderColor: colors.primary }]}
+        onPress={() => onAction('improve')}
+      >
+        <Text style={[styles.buttonText, { color: colors.primary }]}>✨ Mejorar</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => onAction('summarize')}>
-        <Text style={styles.buttonText}>📝 Resumir</Text>
+      <TouchableOpacity
+        style={[styles.button, { borderColor: colors.primary }]}
+        onPress={() => onAction('summarize')}
+      >
+        <Text style={[styles.buttonText, { color: colors.primary }]}>📝 Resumir</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => onAction('expand')}>
-        <Text style={styles.buttonText}>🔎 Expandir</Text>
+      <TouchableOpacity
+        style={[styles.button, { borderColor: colors.primary }]}
+        onPress={() => onAction('expand')}
+      >
+        <Text style={[styles.buttonText, { color: colors.primary }]}>🔎 Expandir</Text>
       </TouchableOpacity>
     </View>
   )
@@ -33,20 +45,19 @@ export function AIActionButtons({ onAction, loading }: AIActionButtonsProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginTop: 12,
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  gap: 8,
+  marginTop: 12,
+  justifyContent: 'center',
   },
   button: {
     borderWidth: 1,
-    borderColor: '#0f62fe',
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 14,
   },
   buttonText: {
-    color: '#0f62fe',
     fontSize: 14,
     fontWeight: '500',
   },
@@ -57,7 +68,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   loadingText: {
-    color: '#525252',
     fontSize: 14,
   },
 })
