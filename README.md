@@ -10,10 +10,6 @@
 
 Aplicación de notas con inteligencia artificial integrada. Crea, edita y mejora tus notas con acciones de IA: mejora el texto, resúmelo o expándelo con un solo toque. Disponible como app web y app móvil nativa.
 
-| Despliegue | URL |
-|------------|-----|
-| Backend | [Render](https://quicknotes-app-5bs0.onrender.com) |
-
 ---
 
 ## Características
