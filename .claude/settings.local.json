@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/cesar/Desktop/taskflow-project/**)",
+      "Bash(npx create-next-app@latest noteflow-api --typescript --app --no-tailwind --no-src-dir --yes)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(node -e \"const zod = require\\('zod'\\); console.log\\(zod.z.string\\(\\).safeParse\\('test'\\)\\)\")",
+      "Bash(ls \"c:/Users/cesar/.claude/projects/c--Users-cesar-Desktop-taskflow-project-ReactNative/memory/\" 2>/dev/null || echo \"empty\")",
+      "Read(//c/Users/cesar/.claude/projects/c--Users-cesar-Desktop-taskflow-project-ReactNative/memory/**)"
+    ]
+  }
+}

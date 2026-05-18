@@ -20,7 +20,7 @@ export default function HomeScreen() {
 
   const filtered = notes.filter(note =>
     note.title.toLowerCase().includes(query.toLowerCase()) ||
-    note.content.toLowerCase().includes(query.toLowerCase())
+    (note.content ?? '').toLowerCase().includes(query.toLowerCase())
   )
 
   if (error) {

@@ -11,11 +11,12 @@ export function NoteCard({ note }: NoteCardProps) {
   const router = useRouter()
   const { colors } = useTheme()
 
-  const preview = note.content.length > 100
-    ? note.content.slice(0, 100) + '...'
-    : note.content
+  const content = note.content ?? ''
+  const preview = content.length > 100
+    ? content.slice(0, 100) + '...'
+    : content
 
-  const formattedDate = new Date(note.updatedAt).toLocaleDateString('es-ES', {
+  const formattedDate = new Date(note.updated_at).toLocaleDateString('es-ES', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',

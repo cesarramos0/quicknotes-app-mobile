@@ -26,7 +26,7 @@ export default function EditNoteScreen() {
   }, [id])
 
   const handleSubmit = async (title: string, content: string) => {
-    await updateNote(id, title, content)
+    await updateNote(id, { title, content })
     router.back()
   }
 

@@ -13,7 +13,7 @@ export default function NewNoteScreen() {
   const [toastVisible, setToastVisible] = useState(false)
 
   const handleSubmit = async (title: string, content: string) => {
-    await createNote(title, content)
+    await createNote({ title, type: 'note', content })
     router.back()
   }
 

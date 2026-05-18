@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback } from 'react'
 import type { ReactNode } from 'react'
-import type { Note } from '../types/note'
+import type { Note, CreateNoteInput, UpdateNoteInput } from '../types/note'
 import { notesApi } from '../api/client'
 
 interface NotesContextType {
@@ -8,8 +8,8 @@ interface NotesContextType {
   loading: boolean
   error: string | null
   fetchNotes: () => Promise<void>
-  createNote: (title: string, content: string) => Promise<Note>
-  updateNote: (id: string, title: string, content: string) => Promise<Note>
+  createNote: (data: CreateNoteInput) => Promise<Note>
+  updateNote: (id: string, data: UpdateNoteInput) => Promise<Note>
   deleteNote: (id: string) => Promise<void>
 }
 
@@ -33,14 +33,14 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const createNote = useCallback(async (title: string, content: string) => {
-    const note = await notesApi.create(title, content)
+  const createNote = useCallback(async (data: CreateNoteInput) => {
+    const note = await notesApi.create(data)
     setNotes(prev => [note, ...prev])
     return note
   }, [])
 
-  const updateNote = useCallback(async (id: string, title: string, content: string) => {
-    const note = await notesApi.update(id, title, content)
+  const updateNote = useCallback(async (id: string, data: UpdateNoteInput) => {
+    const note = await notesApi.update(id, data)
     setNotes(prev => prev.map(n => n.id === id ? note : n))
     return note
   }, [])
